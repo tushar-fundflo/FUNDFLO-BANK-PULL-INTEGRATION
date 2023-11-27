@@ -495,11 +495,10 @@ pipeline{
                 script{
                     def directoryExists = fileExists("${params.EB_APP_NAME}")
                     if (directoryExists){
-                        echo 'exist'
+                        echo "Directory Exists ${params.EB_APP_NAME}"
                     }else {
-                        echo 'not exist'
+                        sh "mkdir ${params.EB_APP_NAME}"
                     }
-                    // sh "mkdir ${params.EB_APP_NAME}"
                     
                     sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
 
