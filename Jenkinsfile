@@ -504,7 +504,7 @@ pipeline{
                     dir("${params.EB_APP_NAME}"){
                         checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']])
                         sh "zip -r version-${BUILD_NUMBER}.zip *"
-                        
+                        sh "aws s3 cp version-${BUILD_NUMBER}.zip s3://elasticbeanstalk-${params.AWS_REGION}-${accountNumber} --region ${params.AWS_REGION}"
                     }
                     // checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'NODE-GIT', url: 'git@github.com:tushar-fundflo/nodejs.git']])
                     // checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']])
@@ -513,7 +513,7 @@ pipeline{
 
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId:params.AWS_ENV, region:params.AWS_REGION]]) {
                         def accountNumber = sh(returnStdout: true, script: 'aws sts get-caller-identity --query "Account" --output text').trim()
-                        sh "aws s3 cp version-${BUILD_NUMBER}.zip s3://elasticbeanstalk-${params.AWS_REGION}-${accountNumber} --region ${params.AWS_REGION}"
+                        // sh "aws s3 cp version-${BUILD_NUMBER}.zip s3://elasticbeanstalk-${params.AWS_REGION}-${accountNumber} --region ${params.AWS_REGION}"
                         sh """aws elasticbeanstalk create-application-version --application-name "${params.EB_APP_NAME}" \
                         --version-label "version-${BUILD_NUMBER}" \
                         --description "Build created from JENKINS. Job:${JOB_NAME}, BuildId:${BUILD_DISPLAY_NAME}" \
