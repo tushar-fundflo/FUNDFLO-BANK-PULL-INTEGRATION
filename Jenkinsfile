@@ -3,7 +3,8 @@ pipeline{
     parameters{
         choice(name:'AWS_ENV', choices:['KMR','DEV','QA','UAT'],description:'From which environment do you want to deploy?')
         choice(name:'AWS_REGION', choices:['ap-south-1'],description:'From which region do you want to deploy?')
-        choice(name:'EB_APP_NAME', choices:['FUNDFLO-BANK-PULL-INTEGRATION','FUNDFLO-TP-INTEGRATION'],description:'From which elasticbeanstalk application do you want to deploy?')
+        choice(name:'EB_APP_NAME', choices:['FUNDFLO-BANK-PULL-INTEGRATION','FUNDFLO-TP-INTEGRATION'],description:'In which elasticbeanstalk application do you want to deploy?')
+        choice(name:'EB_ENV_NAME', choices:['env-1','env-2'],description:'In which elasticbeanstalk enviornment do you want to deploy?')
     }
     stages{
         stage('Resources Check or Create'){
@@ -500,6 +501,7 @@ pipeline{
                     }else {
                         sh "mkdir ${params.EB_APP_NAME}"
                     }
+                    // checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'NODE-GIT', url: 'git@github.com:tushar-fundflo/nodejs.git']])
                     checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']])
 
                     sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
@@ -507,12 +509,12 @@ pipeline{
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId:params.AWS_ENV, region:params.AWS_REGION]]) {
                         def accountNumber = sh(returnStdout: true, script: 'aws sts get-caller-identity --query "Account" --output text').trim()
                         sh "aws s3 cp version-${BUILD_NUMBER}.zip s3://elasticbeanstalk-${params.AWS_REGION}-${accountNumber} --region ${params.AWS_REGION}"
-                        sh """aws elasticbeanstalk create-application-version --application-name "${params.EB_APP_NAME}" \
+                        sh """aws elasticbeanstalk create-application-version --application-name "${params.EB_APP_NAME}" --environment-name "${params.EB_APP_NAME}-${params.EB_ENV_NAME}"\
                         --version-label "version-${BUILD_NUMBER}" \
                         --description "Build created from JENKINS. Job:${JOB_NAME}, BuildId:${BUILD_DISPLAY_NAME}" \
                         --source-bundle S3Bucket=${accountNumber},S3Key=version-${BUILD_NUMBER}.zip \
                         --region ${params.AWS_REGION}"""
-                        sh "aws elasticbeanstalk update-environment --environment-name \"${params.EB_APP_NAME}\" --version-label \"version-${BUILD_NUMBER}\" --region ${params.AWS_REGION}"
+                        sh "aws elasticbeanstalk update-environment --environment-name \"${params.EB_APP_NAME}-${params.EB_ENV_NAME}\" --version-label \"version-${BUILD_NUMBER}\" --region ${params.AWS_REGION}"
                     } 
                 }
             }
