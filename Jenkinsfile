@@ -500,12 +500,19 @@ pipeline{
                     }else {
                         sh "mkdir ${params.EB_APP_NAME}"
                     }
-                     checkout([$class: 'GitSCM', 
-                          branches: [[name: 'main']], 
-                          userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]],
-                          [$class: 'CleanCheckout', deleteUnversionedFiles: true, pruneEmptyDirs: true, 
-                          workspaceChooser: [$class: 'SpecificDirChooser', dir: '/var/lib/jenkins/workspace/FUNDFLO-BANK-PULL-INTEGRATION/FUNDFLO-BANK-PULL-INTEGRATION']])
-                    // checkout([$class: 'GitSCM', 
+                    //  checkout([$class: 'GitSCM', 
+                    //       branches: [[name: 'main']], 
+                    //       userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]],
+                    //       [$class: 'CleanCheckout', deleteUnversionedFiles: true, pruneEmptyDirs: true, 
+                    //       workspaceChooser: [$class: 'SpecificDirChooser', dir: '/var/lib/jenkins/workspace/FUNDFLO-BANK-PULL-INTEGRATION/FUNDFLO-BANK-PULL-INTEGRATION']])
+                    
+                    checkout([
+                    $class: 'GitSCM', 
+                    branches: [[name: 'main']], 
+                    userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]],
+                    [$class: 'CleanCheckout', deleteUnversionedFiles: true, pruneEmptyDirs: true, 
+                    workspaceChooser: [$class: 'SpecificDirChooser', dir: '/var/lib/jenkins/workspace/FUNDFLO-BANK-PULL-INTEGRATION/FUNDFLO-BANK-PULL-INTEGRATION']]
+                )// checkout([$class: 'GitSCM', 
                     //       branches: [[name: 'main']], 
                     //       userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]],
                     //       [$class: 'CleanCheckout', deleteUnversionedFiles: true, pruneEmptyDirs: true, workspaceChooser: 'specific', 
