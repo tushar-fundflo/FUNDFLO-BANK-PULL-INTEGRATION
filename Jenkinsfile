@@ -493,7 +493,8 @@ pipeline{
         stage ('Deploy To AWS'){
             steps{
                 script{
-                    if (-d "${params.EB_APP_NAME}"){
+                    def directoryExists = fileExists("${params.EB_APP_NAME}")
+                    if (directoryExists){
                         echo 'exist'
                     }else {
                         echo 'not exist'
