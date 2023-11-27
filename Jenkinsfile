@@ -493,8 +493,14 @@ pipeline{
         stage ('Deploy To AWS'){
             steps{
                 script{
+                    if (-d "${params.EB_APP_NAME}"){
+                        echo 'exist'
+                    }else {
+                        echo 'not exist'
+                    }
+                    // sh "mkdir ${params.EB_APP_NAME}"
                     
-                    sh "zip -r version-${BUILD_NUMBER}.zip *"
+                    sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
 
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId:params.AWS_ENV, region:params.AWS_REGION]]) {
                         def accountNumber = sh(returnStdout: true, script: 'aws sts get-caller-identity --query "Account" --output text').trim()
