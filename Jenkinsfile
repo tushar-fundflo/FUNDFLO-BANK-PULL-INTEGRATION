@@ -501,8 +501,11 @@ pipeline{
                     }else {
                         sh "mkdir ${params.EB_APP_NAME}"
                     }
+                    dir("${params.EB_APP_NAME}"){
+                        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']])
+                    }
                     // checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'NODE-GIT', url: 'git@github.com:tushar-fundflo/nodejs.git']])
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']])
+                    // checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']])
 
                     sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
 
