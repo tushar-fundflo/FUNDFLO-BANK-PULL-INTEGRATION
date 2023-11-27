@@ -493,13 +493,15 @@ pipeline{
         stage ('Deploy To AWS'){
             steps{
                 script{
+                    
                     def directoryExists = fileExists("${params.EB_APP_NAME}")
                     if (directoryExists){
                         echo "Directory Exists ${params.EB_APP_NAME}"
                     }else {
                         sh "mkdir ${params.EB_APP_NAME}"
                     }
-                    
+                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]).dir('${params.EB_APP_NAME}')
+
                     sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
 
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId:params.AWS_ENV, region:params.AWS_REGION]]) {
