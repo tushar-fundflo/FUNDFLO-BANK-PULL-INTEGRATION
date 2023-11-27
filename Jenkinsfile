@@ -528,7 +528,7 @@ pipeline{
         }
         stage ('Clean Up'){
             steps {
-                sh "rm /var/lib/jenkins/workspace/Tushar_main/version-${BUILD_NUMBER}.zip"
+                sh "rm /var/lib/jenkins/workspace/FUNDFLO-BANK-PULL-INTEGRATION"
             }
         }
         
