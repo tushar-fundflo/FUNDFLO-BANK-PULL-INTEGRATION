@@ -500,7 +500,11 @@ pipeline{
                     }else {
                         sh "mkdir ${params.EB_APP_NAME}"
                     }
-                    
+                    checkout([$class: 'GitSCM', 
+                          branches: [[name: 'main']], 
+                          userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]],
+                          [$class: 'CleanCheckout', deleteUnversionedFiles: true, pruneEmptyDirs: true, workspaceChooser: 'specific', 
+                          specific: '/var/lib/jenkins/workspace/FUNDFLO-BANK-PULL-INTEGRATION/FUNDFLO-BANK-PULL-INTEGRATION'])
                     // def appDirectory = params.EB_APP_NAME.toString()
                     // // def scmVars = checkout([$class: 'GitSCM', branches: [[name: '*/main']], 
                     // //                         userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]])
