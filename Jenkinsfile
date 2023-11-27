@@ -500,7 +500,8 @@ pipeline{
                     }else {
                         sh "mkdir ${params.EB_APP_NAME}"
                     }
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]).dir("${params.EB_APP_NAME}")
+                    def appDirectory = params.EB_APP_NAME.toString()
+                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]).dir(appDirectory)
 
                     sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
 
