@@ -507,8 +507,8 @@ pipeline{
                     // // scmVars = scmVars[0]
                     // // scmVars.dir(appDirectory)
 
-                    def appDirectory = params.EB_APP_NAME.toString()
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]).dir(appDirectory)
+                    // def appDirectory = params.EB_APP_NAME.toString()
+                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/tushar-fundflo/FUNDFLO-BANK-PULL-INTEGRATION.git']]).dir('/var/lib/jenkins/workspace/FUNDFLO-BANK-PULL-INTEGRATION/FUNDFLO-BANK-PULL-INTEGRATION')
 
                     sh "zip -r version-${BUILD_NUMBER}.zip ${params.EB_APP_NAME}"
 
